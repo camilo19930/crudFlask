@@ -8,7 +8,7 @@ from models.usuario import User
 from schema.schemaApp import TaskSchema
 from schema.schemaApp import PersonaSchema
 from schema.schemaApp import UsuarioShema
-from flask_jwt import JWT, jwt_required, current_identity
+from flask_jwt import JWT, jwt_required, current_identity, timedelta
 from werkzeug.security import safe_str_cmp
 
 
@@ -16,6 +16,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root@localhost/flaskmysql'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 app.config['SECRET_KEY'] = 'super-secret'
+app.config['JWT_EXPIRATION_DELTA'] = timedelta(seconds=600)  # tiempo de expiración del token
 
 db = SQLAlchemy(app)        # Devuele instancia de base de datos
 db.create_all()                             # Lee toda la clase y procede a crear la tabla
@@ -127,7 +128,7 @@ def get_usuario(id):
     usuario = Usuario.query.get(id)
     return usuario_schema.jsonify(usuario)
 
-# AUTENTICACIÓN
+# AUTENTICATIÓN
 def lista_usuarios():
     all_usuarios = Usuario.query.all()                    # Obtiene toda la información de la tabla
     result = usuarios_schema.dump(all_usuarios)           # obtiene los datos de la base de datos
@@ -150,7 +151,6 @@ def identity(payload):
     return userid_table.get(user_id, None)
 
 
-#No sirve
 @app.route('/protected')
 @jwt_required()
 def protected():
