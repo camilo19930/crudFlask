@@ -11,14 +11,3 @@ class QuerysApp():
 
     def get_task_all():
         return Task.query.all()
-
-
-
-    # def createTask():
-    # title = request.json['title']
-    # description = request.json['description']
-
-    # new_task = Task(title, description)
-    # db.session.add(new_task)
-    # db.session.commit()
-    # return task_schema.jsonify(new_task)
